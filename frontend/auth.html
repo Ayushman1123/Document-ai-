@@ -4,13 +4,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document AI | Authentication</title>
-    <meta name="description" content="Secure access to Document AI System - Intelligent Invoice Field Extraction">
+    <title>Document AI | Get Started</title>
+    <meta name="description" content="Register to access Document AI - Intelligent Invoice Field Extraction">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="auth.css">
+    <style>
+        /* Auth Page Specific Styles */
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -5s;
+        }
+
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            gap: 4rem;
+        }
+
+        .auth-card {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo .logo-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .logo-tagline {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .auth-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-title h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-title p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Google Login Button */
+        .google-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .google-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        .google-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        /* Form Styles */
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(148, 163, 184, 0.6);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-1);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-register .arrow {
+            transition: transform 0.3s;
+        }
+
+        .btn-register:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Features */
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 320px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            animation: fadeInRight 0.6s ease-out both;
+        }
+
+        .feature-item:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .feature-item:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .feature-item:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-content p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Loading */
+        .loading .btn-register::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1001;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem 1.5rem;
+            margin-top: 0.5rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--error);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .auth-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .features {
+                flex-direction: row;
+                max-width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .feature-item {
+                flex: 1;
+                min-width: 280px;
+                max-width: 320px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -28,203 +402,260 @@
                 <p class="logo-tagline">Intelligent Invoice Processing</p>
             </div>
 
-            <!-- Auth Tabs -->
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login" id="loginTab">Sign In</button>
-                <button class="auth-tab" data-tab="register" id="registerTab">Register</button>
+            <div class="auth-title">
+                <h2>Create Your Account</h2>
+                <p>Start extracting invoice data with AI</p>
             </div>
 
-            <!-- Login Form -->
-            <form id="loginForm" class="auth-form">
-                <div class="form-group">
-                    <label for="loginEmail">Email Address</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">📧</span>
-                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">🔒</span>
-                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                        <button type="button" class="toggle-password"
-                            onclick="togglePassword('loginPassword')">👁</button>
-                    </div>
-                </div>
-                <div class="form-options">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="rememberMe">
-                        <span>Remember me</span>
-                    </label>
-                    <a href="#" class="forgot-link" onclick="showForgotPassword()">Forgot password?</a>
-                </div>
-                <button type="submit" class="btn btn-primary btn-auth">
-                    <span>Sign In</span>
-                    <span class="btn-arrow">→</span>
-                </button>
-            </form>
+            <!-- Google Sign In -->
+            <button type="button" class="google-btn" id="googleBtn" onclick="signInWithGoogle()">
+                <svg viewBox="0 0 24 24">
+                    <path fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Continue with Google
+            </button>
 
-            <!-- Register Form -->
-            <form id="registerForm" class="auth-form hidden">
+            <div class="divider"><span>or register with email</span></div>
+
+            <!-- Registration Form -->
+            <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName">First Name</label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">👤</span>
-                            <input type="text" id="firstName" placeholder="John" required>
-                        </div>
+                        <input type="text" id="firstName" placeholder="John" required>
                     </div>
                     <div class="form-group">
                         <label for="lastName">Last Name</label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">👤</span>
-                            <input type="text" id="lastName" placeholder="Doe" required>
-                        </div>
+                        <input type="text" id="lastName" placeholder="Doe" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="registerEmail">Email Address</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">📧</span>
-                        <input type="email" id="registerEmail" placeholder="john@example.com" required>
-                    </div>
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="john@example.com" required>
                 </div>
                 <div class="form-group">
-                    <label for="phone">Phone Number (for MFA)</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">📱</span>
-                        <input type="tel" id="phone" placeholder="+91 9876543210" required>
-                    </div>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a strong password" required minlength="8">
                 </div>
-                <div class="form-group">
-                    <label for="registerPassword">Password</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">🔒</span>
-                        <input type="password" id="registerPassword" placeholder="Create a strong password" required
-                            minlength="8">
-                        <button type="button" class="toggle-password"
-                            onclick="togglePassword('registerPassword')">👁</button>
-                    </div>
-                    <div class="password-strength" id="passwordStrength">
-                        <div class="strength-bar"></div>
-                        <span class="strength-text">Password strength</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">🔒</span>
-                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
-                    </div>
-                </div>
-                <div class="mfa-option">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="enableMFA" checked>
-                        <span>Enable Multi-Factor Authentication</span>
-                    </label>
-                    <p class="mfa-hint">Recommended for enhanced security</p>
-                </div>
-                <div class="form-group terms">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="agreeTerms" required>
-                        <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary btn-auth">
-                    <span>Create Account</span>
-                    <span class="btn-arrow">→</span>
+                <button type="submit" class="btn-register" id="registerBtn">
+                    <span>Create Account & Start</span>
+                    <span class="arrow">→</span>
                 </button>
             </form>
 
-            <!-- MFA Verification -->
-            <div id="mfaSection" class="mfa-section hidden">
-                <div class="mfa-header">
-                    <span class="mfa-icon">🔐</span>
-                    <h3>Two-Factor Authentication</h3>
-                    <p>Enter the 6-digit code sent to your phone</p>
-                </div>
-                <div class="otp-inputs" id="otpInputs">
-                    <input type="text" maxlength="1" class="otp-input" data-index="0">
-                    <input type="text" maxlength="1" class="otp-input" data-index="1">
-                    <input type="text" maxlength="1" class="otp-input" data-index="2">
-                    <span class="otp-separator">-</span>
-                    <input type="text" maxlength="1" class="otp-input" data-index="3">
-                    <input type="text" maxlength="1" class="otp-input" data-index="4">
-                    <input type="text" maxlength="1" class="otp-input" data-index="5">
-                </div>
-                <div class="mfa-timer">
-                    <span id="timerText">Code expires in <span id="countdown">60</span>s</span>
-                    <button type="button" class="resend-btn hidden" id="resendBtn" onclick="resendOTP()">Resend
-                        Code</button>
-                </div>
-                <button type="button" class="btn btn-primary btn-auth" id="verifyMFABtn" onclick="verifyMFA()">
-                    <span>Verify & Continue</span>
-                    <span class="btn-arrow">→</span>
-                </button>
-                <button type="button" class="btn-back" onclick="backToLogin()">← Back to login</button>
-            </div>
-
-            <!-- Social Login -->
-            <div class="social-divider" id="socialDivider">
-                <span>or continue with</span>
-            </div>
-            <div class="social-buttons" id="socialButtons">
-                <button type="button" class="social-btn" onclick="socialLogin('google')">
-                    <svg viewBox="0 0 24 24" width="20" height="20">
-                        <path fill="#4285F4"
-                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                        <path fill="#34A853"
-                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                        <path fill="#FBBC05"
-                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                        <path fill="#EA4335"
-                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                    </svg>
-                    <span>Google</span>
-                </button>
-                <button type="button" class="social-btn" onclick="socialLogin('microsoft')">
-                    <svg viewBox="0 0 24 24" width="20" height="20">
-                        <path fill="#F25022" d="M1 1h10v10H1z" />
-                        <path fill="#00A4EF" d="M1 13h10v10H1z" />
-                        <path fill="#7FBA00" d="M13 1h10v10H13z" />
-                        <path fill="#FFB900" d="M13 13h10v10H13z" />
-                    </svg>
-                    <span>Microsoft</span>
-                </button>
-            </div>
+            <p class="login-link">
+                Already have an account? <a href="#" onclick="quickLogin()">Sign in here</a>
+            </p>
         </div>
 
-        <!-- Features Showcase -->
-        <div class="auth-features">
+        <!-- Features -->
+        <div class="features">
             <div class="feature-item">
-                <span class="feature-icon">🔒</span>
+                <span class="feature-icon">📄</span>
                 <div class="feature-content">
-                    <h4>Enterprise Security</h4>
-                    <p>Multi-factor authentication & encryption</p>
+                    <h4>Extract Fields</h4>
+                    <p>Upload invoices and extract dealer, model, cost & more automatically</p>
                 </div>
             </div>
             <div class="feature-item">
                 <span class="feature-icon">🤖</span>
                 <div class="feature-content">
-                    <h4>AI-Powered Extraction</h4>
-                    <p>95%+ accuracy on invoice fields</p>
+                    <h4>AI-Powered</h4>
+                    <p>Agentic AI with self-improving extraction accuracy</p>
                 </div>
             </div>
             <div class="feature-item">
-                <span class="feature-icon">⚡</span>
+                <span class="feature-icon">📊</span>
                 <div class="feature-content">
-                    <h4>Lightning Fast</h4>
-                    <p>Process documents in seconds</p>
+                    <h4>Analytics</h4>
+                    <p>Track processing stats and extraction confidence</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <script src="auth.js"></script>
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+
+        // Initialize Google Sign-In
+        window.onload = function () {
+            // Check if already logged in
+            const token = localStorage.getItem('auth_token');
+            if (token) {
+                window.location.href = 'index.html';
+            }
+        };
+
+        // Google Sign-In
+        function signInWithGoogle() {
+            // For demo, we'll create a mock Google login
+            // In production, you'd integrate with Google OAuth
+            const btn = document.getElementById('googleBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="10" fill="none" stroke="#4285F4" stroke-width="2"><animate attributeName="stroke-dasharray" values="0 60;60 60" dur="0.5s" fill="freeze"/></circle></svg> Connecting...';
+
+            // Simulate Google auth delay
+            setTimeout(async () => {
+                try {
+                    // Create user from Google (simulated)
+                    const googleUser = {
+                        first_name: "Google",
+                        last_name: "User",
+                        email: `google_${Date.now()}@gmail.com`,
+                        phone: "+919999999999",
+                        password: "GoogleAuth@123",
+                        enable_mfa: false
+                    };
+
+                    const response = await fetch(`${API_BASE}/auth/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(googleUser)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok || data.error?.includes('already registered')) {
+                        // Login
+                        const loginRes = await fetch(`${API_BASE}/auth/login`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: googleUser.email,
+                                password: googleUser.password,
+                                remember_me: true
+                            })
+                        });
+
+                        const loginData = await loginRes.json();
+
+                        if (loginRes.ok) {
+                            localStorage.setItem('auth_token', loginData.access_token);
+                            localStorage.setItem('user', JSON.stringify(loginData.user));
+                            showToast('Google login successful! Redirecting...', 'success');
+                            setTimeout(() => window.location.href = 'index.html', 1000);
+                        }
+                    } else {
+                        throw new Error(data.detail || 'Google login failed');
+                    }
+                } catch (error) {
+                    showToast('Google sign-in temporarily unavailable. Please register with email.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg viewBox="0 0 24 24" width="24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google';
+                }
+            }, 1500);
+        }
+
+        // Email Registration
+        async function handleRegister(e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const btn = document.getElementById('registerBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span>Creating account...</span>';
+            document.body.classList.add('loading');
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        first_name: firstName,
+                        last_name: lastName,
+                        email: email,
+                        phone: "+910000000000",
+                        password: password,
+                        enable_mfa: false
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Registration failed');
+                }
+
+                // Auto-login after registration
+                const loginRes = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, remember_me: true })
+                });
+
+                const loginData = await loginRes.json();
+
+                if (loginRes.ok) {
+                    localStorage.setItem('auth_token', loginData.access_token);
+                    localStorage.setItem('user', JSON.stringify(loginData.user));
+                    showToast('Account created! Welcome to Document AI!', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 1000);
+                } else {
+                    throw new Error('Login after registration failed');
+                }
+
+            } catch (error) {
+                showToast(error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<span>Create Account & Start</span><span class="arrow">→</span>';
+            } finally {
+                document.body.classList.remove('loading');
+            }
+        }
+
+        // Quick login for existing users
+        function quickLogin() {
+            const email = prompt('Enter your email:');
+            if (!email) return;
+
+            const password = prompt('Enter your password:');
+            if (!password) return;
+
+            fetch(`${API_BASE}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, remember_me: true })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem('auth_token', data.access_token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        showToast('Login successful!', 'success');
+                        setTimeout(() => window.location.href = 'index.html', 1000);
+                    } else {
+                        showToast(data.detail || 'Login failed', 'error');
+                    }
+                })
+                .catch(err => showToast('Login failed', 'error'));
+        }
+
+        // Toast
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+    </script>
 </body>
 
 </html>

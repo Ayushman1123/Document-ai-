@@ -1,0 +1,41 @@
+{
+  "test@example.com": {
+    "id": "2ccd1f5c",
+    "email": "test@example.com",
+    "first_name": "Test",
+    "last_name": "User",
+    "phone": "+919876543210",
+    "password_hash": "ce32ff0452fa289f245e9a8c706a352ec7297b08b2d8a9bcaa0bb24134b4ec18",
+    "password_salt": "95e4eddbaebbcf28174a68fb15393680",
+    "mfa_enabled": false,
+    "created_at": "2026-01-23T04:52:59.574655",
+    "last_login": "2026-01-23T04:53:08.057593",
+    "is_verified": true
+  },
+  "mfa@example.com": {
+    "id": "0d480b1f",
+    "email": "mfa@example.com",
+    "first_name": "MFA",
+    "last_name": "User",
+    "phone": "+919876543210",
+    "password_hash": "d942a3ae1e56afb10cd161799f47660effaf9fff53e319f842c1c2503875895b",
+    "password_salt": "1d51e2a966aa34211b3e21d448f2847a",
+    "mfa_enabled": true,
+    "created_at": "2026-01-23T04:53:23.423168",
+    "last_login": null,
+    "is_verified": false
+  },
+  "ayushnil2005@gmail.com": {
+    "id": "998e6075",
+    "email": "ayushnil2005@gmail.com",
+    "first_name": "Ayushman",
+    "last_name": "Ghosh",
+    "phone": "8389032906",
+    "password_hash": "cd830bb276693052418a9e4f6148a0e3a4e59e8ce527dc7b36f9e79094870c9a",
+    "password_salt": "f03a79a0867c6b72018a99c4202044d2",
+    "mfa_enabled": true,
+    "created_at": "2026-01-23T05:00:45.453252",
+    "last_login": null,
+    "is_verified": false
+  }
+}
