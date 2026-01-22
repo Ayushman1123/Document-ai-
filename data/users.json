@@ -37,5 +37,18 @@
     "created_at": "2026-01-23T05:00:45.453252",
     "last_login": null,
     "is_verified": false
+  },
+  "google_1769125665877@gmail.com": {
+    "id": "dfecc1df",
+    "email": "google_1769125665877@gmail.com",
+    "first_name": "Google",
+    "last_name": "User",
+    "phone": "+919999999999",
+    "password_hash": "cee7fd9b25e71a04cd0f6172882d0a19b9ccdbcd68b18f2d1d0d0caa5695ddec",
+    "password_salt": "3d224da1701e897a5e7f58e1c41b6dba",
+    "mfa_enabled": false,
+    "created_at": "2026-01-23T05:17:46.274549",
+    "last_login": "2026-01-23T05:17:46.319245",
+    "is_verified": true
   }
 }
