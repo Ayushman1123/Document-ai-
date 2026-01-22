@@ -11,6 +11,7 @@ from .orchestration import (
     BaseAgent, OCRAgent, VisionAgent, ExtractorAgent, ValidatorAgent
 )
 from .coordinator import AgenticCoordinator
+from .auth_service import AuthService, get_auth_service
 
 __all__ = [
     "OCRService",
@@ -22,5 +23,8 @@ __all__ = [
     "AgenticCoordinator",
     "AgentRole",
     "TaskStatus",
-    "AgentTask"
+    "AgentTask",
+    "AuthService",
+    "get_auth_service"
 ]
+

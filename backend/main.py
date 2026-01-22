@@ -11,11 +11,11 @@ import uuid
 import json
 import shutil
 
-from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks, Query
+from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks, Query, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 import uvicorn
 
 from config import APIConfig, ModelConfig, BASE_DIR, UPLOAD_DIR, OUTPUT_DIR
@@ -76,13 +76,52 @@ class OrchestrationResult(BaseModel):
     agents_used: List[str]
     reasoning_steps: int
 
+# Authentication Models
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+    remember_me: bool = False
+
+class RegisterRequest(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    phone: str
+    password: str
+    enable_mfa: bool = True
+
+class MFAVerifyRequest(BaseModel):
+    mfa_token: str
+    otp_code: str
+
+class ResendOTPRequest(BaseModel):
+    mfa_token: str
+
 # Store for tracking processing jobs
 processing_jobs = {}
+
+# Store for extraction history
+extraction_history = []
 
 # Lazy initialization of services
 _document_processor = None
 _agentic_ai = None
 _agentic_coordinator = None
+_auth_service = None
+
+def get_auth_service():
+    """Lazy initialization of auth service"""
+    global _auth_service
+    if _auth_service is None:
+        try:
+            from services.auth_service import AuthService
+            _auth_service = AuthService()
+            logger.info("AuthService initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize AuthService: {e}")
+            _auth_service = None
+    return _auth_service
+
 
 def get_document_processor():
     """Lazy initialization of document processor"""
@@ -166,11 +205,134 @@ async def health_check():
             "vision": "available",
             "field_extraction": "available",
             "agentic_ai": "available" if get_agentic_ai() else "unavailable",
-            "agentic_orchestrator": "available" if get_agentic_coordinator() else "unavailable"
+            "agentic_orchestrator": "available" if get_agentic_coordinator() else "unavailable",
+            "authentication": "available" if get_auth_service() else "unavailable"
         },
         "upload_dir": str(UPLOAD_DIR),
         "output_dir": str(OUTPUT_DIR)
     }
+
+# ==================== AUTHENTICATION ENDPOINTS ====================
+
+@app.post("/api/auth/register")
+async def register(request: RegisterRequest):
+    """
+    Register a new user
+    
+    If MFA is enabled, returns an MFA token for verification.
+    Otherwise, creates the account immediately.
+    """
+    auth = get_auth_service()
+    if not auth:
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+    
+    result = auth.register(
+        email=request.email,
+        password=request.password,
+        first_name=request.first_name,
+        last_name=request.last_name,
+        phone=request.phone,
+        enable_mfa=request.enable_mfa
+    )
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error", "Registration failed"))
+    
+    return result
+
+@app.post("/api/auth/login")
+async def login(request: LoginRequest):
+    """
+    Authenticate user
+    
+    If MFA is enabled for the user, returns an MFA token.
+    Otherwise, returns an access token directly.
+    """
+    auth = get_auth_service()
+    if not auth:
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+    
+    result = auth.login(
+        email=request.email,
+        password=request.password,
+        remember_me=request.remember_me
+    )
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=401, detail=result.get("error", "Login failed"))
+    
+    return result
+
+@app.post("/api/auth/verify-mfa")
+async def verify_mfa(request: MFAVerifyRequest):
+    """
+    Verify MFA code and complete login/registration
+    
+    Returns access token on successful verification.
+    """
+    auth = get_auth_service()
+    if not auth:
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+    
+    result = auth.verify_mfa(
+        mfa_token=request.mfa_token,
+        otp_code=request.otp_code
+    )
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=401, detail=result.get("error", "Verification failed"))
+    
+    return result
+
+@app.post("/api/auth/resend-otp")
+async def resend_otp(request: ResendOTPRequest):
+    """Resend OTP code for MFA verification"""
+    auth = get_auth_service()
+    if not auth:
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+    
+    result = auth.resend_otp(mfa_token=request.mfa_token)
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error", "Failed to resend"))
+    
+    return result
+
+@app.get("/api/auth/validate")
+async def validate_token(authorization: str = Header(None)):
+    """Validate access token"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="No authorization token provided")
+    
+    # Extract token from "Bearer <token>" format
+    token = authorization.replace("Bearer ", "") if authorization.startswith("Bearer ") else authorization
+    
+    auth = get_auth_service()
+    if not auth:
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+    
+    result = auth.validate_token(token)
+    
+    if not result.get("valid"):
+        raise HTTPException(status_code=401, detail=result.get("error", "Invalid token"))
+    
+    return result
+
+@app.post("/api/auth/logout")
+async def logout(authorization: str = Header(None)):
+    """Logout and invalidate session"""
+    if not authorization:
+        return {"success": True, "message": "Already logged out"}
+    
+    token = authorization.replace("Bearer ", "") if authorization.startswith("Bearer ") else authorization
+    
+    auth = get_auth_service()
+    if auth:
+        auth.logout(token)
+    
+    return {"success": True, "message": "Logged out successfully"}
+
+# ==================== DOCUMENT PROCESSING ENDPOINTS ====================
 
 @app.post("/api/extract/orchestrated", response_model=OrchestrationResult)
 async def extract_with_orchestration(file: UploadFile = File(...)):
@@ -460,6 +622,14 @@ async def get_stats():
     # Calculate average metrics
     processing_times = []
     confidences = []
+    field_confidences = {
+        "dealer_name": [],
+        "model_name": [],
+        "horse_power": [],
+        "asset_cost": [],
+        "dealer_signature": [],
+        "dealer_stamp": []
+    }
     
     for dir_path in output_dirs:
         if dir_path.is_dir():
@@ -473,15 +643,54 @@ async def get_stats():
                                 processing_times.append(result["metadata"]["processing_time_seconds"])
                             if "overall_confidence" in result["metadata"]:
                                 confidences.append(result["metadata"]["overall_confidence"])
+                        
+                        # Extract field-level confidence
+                        if "fields" in result:
+                            for field_name, field_data in result["fields"].items():
+                                if field_name in field_confidences and isinstance(field_data, dict):
+                                    conf = field_data.get("confidence", 0)
+                                    field_confidences[field_name].append(conf)
                 except:
                     pass
+    
+    # Calculate field averages
+    field_accuracy = {}
+    for field_name, confs in field_confidences.items():
+        field_accuracy[field_name] = sum(confs) / len(confs) if confs else 0
     
     return {
         "total_documents_processed": total_processed,
         "average_processing_time": sum(processing_times) / len(processing_times) if processing_times else 0,
         "average_confidence": sum(confidences) / len(confidences) if confidences else 0,
-        "active_jobs": len([j for j in processing_jobs.values() if j["status"] == "processing"])
+        "active_jobs": len([j for j in processing_jobs.values() if j["status"] == "processing"]),
+        "field_accuracy": field_accuracy
     }
+
+@app.get("/api/history")
+async def get_extraction_history(limit: int = Query(50, description="Maximum number of items")):
+    """Get extraction history"""
+    output_dirs = list(OUTPUT_DIR.iterdir()) if OUTPUT_DIR.exists() else []
+    
+    history = []
+    for dir_path in sorted(output_dirs, reverse=True)[:limit]:
+        if dir_path.is_dir():
+            result_file = dir_path / "result.json"
+            if result_file.exists():
+                try:
+                    with open(result_file, "r") as f:
+                        result = json.load(f)
+                        history.append({
+                            "document_id": result.get("document_id", dir_path.name),
+                            "file_name": result.get("file_name", "Unknown"),
+                            "status": result.get("status", "completed"),
+                            "overall_confidence": result.get("metadata", {}).get("overall_confidence", 0),
+                            "processing_time": result.get("metadata", {}).get("processing_time_seconds", 0),
+                            "timestamp": result.get("metadata", {}).get("processed_at", "")
+                        })
+                except:
+                    pass
+    
+    return {"history": history, "total": len(history)}
 
 @app.delete("/api/results/{document_id}")
 async def delete_result(document_id: str):
@@ -503,3 +712,4 @@ if __name__ == "__main__":
         port=APIConfig.PORT,
         reload=APIConfig.DEBUG
     )
+

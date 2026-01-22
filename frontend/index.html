@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="animated-bg">
         <div class="gradient-orb orb-1"></div>
@@ -20,9 +22,13 @@
                 <span class="logo-text">Document<span class="highlight">AI</span></span>
             </div>
             <div class="nav-links">
-                <a href="#upload" class="nav-link active">Extract</a>
-                <a href="#results" class="nav-link">Results</a>
-                <a href="#analytics" class="nav-link">Analytics</a>
+                <a href="#upload" class="nav-link active" data-section="upload">Extract</a>
+                <a href="#results" class="nav-link" data-section="results">Results</a>
+                <a href="#analytics" class="nav-link" data-section="analytics">Analytics</a>
+            </div>
+            <div class="user-section" id="userSection">
+                <span class="user-name" id="userName">Guest</span>
+                <button class="btn btn-small" id="authBtn" onclick="handleAuthClick()">Sign In</button>
             </div>
         </div>
     </nav>
@@ -76,9 +82,82 @@
         <section class="analytics-section" id="analytics">
             <h2>Processing Analytics</h2>
             <div class="stats-grid">
-                <div class="stat-card"><div class="stat-value" id="totalProcessed">0</div><div class="stat-label">Documents</div></div>
-                <div class="stat-card"><div class="stat-value" id="avgTime">0s</div><div class="stat-label">Avg Time</div></div>
-                <div class="stat-card"><div class="stat-value" id="avgConfidence">0%</div><div class="stat-label">Avg Confidence</div></div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalProcessed">0</div>
+                    <div class="stat-label">Documents Processed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgTime">0s</div>
+                    <div class="stat-label">Avg Processing Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgConfidence">0%</div>
+                    <div class="stat-label">Avg Confidence</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="successRate">0%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+            </div>
+
+            <!-- Field Accuracy Chart -->
+            <div class="chart-container">
+                <h3>Field Extraction Accuracy</h3>
+                <div class="accuracy-bars" id="accuracyBars">
+                    <div class="accuracy-bar-item">
+                        <span class="bar-label">Dealer Name</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 0%" data-field="dealer_name"></div>
+                        </div>
+                        <span class="bar-value">0%</span>
+                    </div>
+                    <div class="accuracy-bar-item">
+                        <span class="bar-label">Model Name</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 0%" data-field="model_name"></div>
+                        </div>
+                        <span class="bar-value">0%</span>
+                    </div>
+                    <div class="accuracy-bar-item">
+                        <span class="bar-label">Horse Power</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 0%" data-field="horse_power"></div>
+                        </div>
+                        <span class="bar-value">0%</span>
+                    </div>
+                    <div class="accuracy-bar-item">
+                        <span class="bar-label">Asset Cost</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 0%" data-field="asset_cost"></div>
+                        </div>
+                        <span class="bar-value">0%</span>
+                    </div>
+                    <div class="accuracy-bar-item">
+                        <span class="bar-label">Signature</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 0%" data-field="dealer_signature"></div>
+                        </div>
+                        <span class="bar-value">0%</span>
+                    </div>
+                    <div class="accuracy-bar-item">
+                        <span class="bar-label">Stamp</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 0%" data-field="dealer_stamp"></div>
+                        </div>
+                        <span class="bar-value">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Extraction History -->
+            <div class="history-container">
+                <h3>Recent Extractions</h3>
+                <div class="history-list" id="historyList">
+                    <div class="empty-history">
+                        <span class="empty-icon">📄</span>
+                        <p>No extraction history yet. Upload a document to get started!</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -97,4 +176,5 @@
     <div class="toast-container" id="toastContainer"></div>
     <script src="app.js"></script>
 </body>
+
 </html>
