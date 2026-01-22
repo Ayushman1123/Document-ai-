@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document AI System | Invoice Field Extraction</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <span class="logo-text">Document<span class="highlight">AI</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#upload" class="nav-link active">Extract</a>
+                <a href="#results" class="nav-link">Results</a>
+                <a href="#analytics" class="nav-link">Analytics</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="hero" id="upload">
+            <div class="hero-content">
+                <span class="hero-badge">Powered by AI & Vision</span>
+                <h1>Intelligent Invoice <span class="gradient-text">Field Extraction</span></h1>
+                <p>Extract dealer names, models, costs, signatures & stamps with 95%+ accuracy</p>
+            </div>
+        </section>
+
+        <section class="upload-section">
+            <div class="upload-container">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📄</div>
+                    <h3>Drop your invoice here</h3>
+                    <p>or click to browse • PDF, PNG, JPG, TIFF</p>
+                    <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.tiff,.bmp" hidden>
+                </div>
+                <div class="preview-area hidden" id="previewArea">
+                    <img id="previewImage" src="" alt="Preview">
+                    <span id="fileName"></span>
+                    <button class="btn-remove" id="removeFile">✕</button>
+                </div>
+                <label class="toggle-option">
+                    <input type="checkbox" id="useAgentic" checked>
+                    <span>Use Agentic AI (self-improving)</span>
+                </label>
+                <button class="btn btn-primary" id="extractBtn" disabled>Extract Fields</button>
+            </div>
+        </section>
+
+        <section class="results-section hidden" id="results">
+            <div class="results-header">
+                <h2>Extraction Results</h2>
+                <div class="results-meta">
+                    <span id="overallConfidence">--% Confidence</span>
+                    <span id="processingTime">-- seconds</span>
+                </div>
+            </div>
+            <div class="results-grid" id="resultsGrid"></div>
+            <div class="ai-explanation" id="aiExplanation"></div>
+            <div class="export-actions">
+                <button class="btn btn-secondary" id="exportJson">Export JSON</button>
+                <button class="btn btn-secondary" id="viewAnnotated">View Annotated</button>
+            </div>
+        </section>
+
+        <section class="analytics-section" id="analytics">
+            <h2>Processing Analytics</h2>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="totalProcessed">0</div><div class="stat-label">Documents</div></div>
+                <div class="stat-card"><div class="stat-value" id="avgTime">0s</div><div class="stat-label">Avg Time</div></div>
+                <div class="stat-card"><div class="stat-value" id="avgConfidence">0%</div><div class="stat-label">Avg Confidence</div></div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal hidden" id="editModal">
+        <div class="modal-content">
+            <h3>Correct Field Value</h3>
+            <label id="editFieldLabel">Field</label>
+            <input type="text" id="editFieldValue" placeholder="Enter correct value">
+            <div class="modal-actions">
+                <button class="btn" id="cancelEdit">Cancel</button>
+                <button class="btn btn-primary" id="submitEdit">Submit</button>
+            </div>
+        </div>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="app.js"></script>
+</body>
+</html>

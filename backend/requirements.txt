@@ -1,0 +1,35 @@
+# Document AI Backend Dependencies
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+pydantic==2.5.3
+
+# OCR and Vision
+paddlepaddle==2.5.2
+paddleocr==2.7.0.3
+opencv-python-headless==4.9.0.80
+pillow==10.2.0
+pdf2image==1.16.3
+
+# AI/ML
+torch==2.1.2
+torchvision==0.16.2
+transformers==4.36.2
+ultralytics==8.0.235
+numpy==1.26.3
+
+# LLM for field extraction
+openai==1.6.1
+langchain==0.1.0
+google-generativeai==0.3.2
+
+# Utilities
+python-dotenv==1.0.0
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.23.0
+aiofiles==23.2.1
+httpx==0.26.0
+pyyaml==6.0.1
+
+# CORS
+starlette==0.35.1
